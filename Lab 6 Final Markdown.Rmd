@@ -1,0 +1,166 @@
+---
+title: 'Lab 6: Foundations for statistical inference - Sampling distributions'
+author: "Justin Lotz"
+date: "26/05/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#The data
+
+##Load real estate data from the city of Ames, Iowa.
+```{r}
+download.file("http://www.openintro.org/stat/data/ames.RData", destfile = "ames.RData")
+load("ames.RData")
+```
+
+##Create short names for above ground living areas and the sales price.
+```{r}
+area <- ames$Gr.Liv.Area
+price <- ames$SalePrice
+```
+
+##Histogram of the distribution of area in in our population of home sales and describe the distribution
+```{r}
+summary(area)
+hist(area)
+
+#The distribution is right skewed with the majority of the living spaces being between 1000 and 2000 square feet. 
+```
+
+#The unknown sampling distribution
+
+##Create an area sample size of 50 homes in Ames and describe the distribution of the sample. How does the sample distribution compare to the entire population?
+```{r}
+samp1 <- sample(area, 50)
+hist(samp1)
+
+#Similair to the distribution of the entire populaion, the sample area distribution is also right skewed with the majority of the homes having a living area of between 1000 and 2000 square feet. This is to be expected since the sample should represent a snpoashot of the populatioin in its entirity.
+
+```
+
+##Find the average area of homes in Ames by calculating the mean of the sample.
+```{r}
+mean(samp1)
+```
+
+##Create another sample of the Ames home areas and compare the mean to the 1st sample.
+```{r}
+samp2 <- sample(area, 50)
+mean(samp2)
+
+#The sample 2 mean is significantly lower than the first sample.
+```
+
+##Create a sample with 100 and 1000 homes and evaluate which sampling mean is most accurate compared to the true population mean of 1499.69 square feet.
+```{r}
+mean(sample(area, 100))
+mean(sample(area, 1000))
+
+#The sample size 0f 1000 will be more accurate. The larger the sample, the closer the approximated mean will be to the full population.
+```
+
+##Generate 5000 samples and compute the sample mean of each
+```{r}
+sample_means50 <- rep(NA, 5000)
+
+for (i in 1:5000) {
+samp <- sample(area, 50)
+sample_means50[i] <- mean(samp)}
+
+
+hist(sample_means50, breaks = 25)
+```
+
+##How many elements are there in sample_means50? Describe the sampling distribution, and be sure to specifically note its center. Would you expect the distribution to change if we instead collected 50,000 sample means?
+```{r}
+#There are 5000 elements in sample_means50. The sample is uniformally distributed showing that the sampling distribution of the mean is close to 1500. If we had 50000 sample means I would expect the distribution to be even denser around the actual mean of 1499.
+```
+
+#Interlude: The for loop
+```{r}
+#Initialize a vector of 100 zeros called sample_means_small.
+sample_means_small <- rep(NA, 100)
+
+#Run a loop that takes a sample of size 50 from area and stores the sample mean in sample_means_small, but only iterate from 1 to 100.
+for (i in 1:100) {
+samp11 <- sample(area, 50)
+sample_means_small[i] <- mean(samp11)}
+```
+
+#Sample size and the sampling distribution
+```{r}
+sample_means10 <- rep(NA, 5000)
+sample_means100 <- rep(NA, 5000)
+
+for(i in 1:5000){
+samp <- sample(area, 10)
+sample_means10[i] <- mean(samp)
+samp <- sample(area, 100)
+sample_means100[i] <- mean(samp)
+}
+
+
+```
+
+##Plot the 3 distributions
+```{r}
+par(mfrow = c(3, 1))
+
+xlimits <- range(sample_means10)
+
+hist(sample_means10, breaks = 20, xlim = xlimits)
+hist(sample_means50, breaks = 20, xlim = xlimits)
+hist(sample_means100, breaks = 20, xlim = xlimits)
+```
+
+##When the sample size is larger, what happens to the center? What about the spread?
+```{r}
+#When the sample size is larger the center becomes more concentrated and the spread becomes narrower.
+```
+
+#On your own
+
+```{r}
+#Take a random sample of size 50 from price. Using this sample, what is your best point estimate of the population mean?
+sample_price50 <- sample(price, 50)
+mean(sample_price50)
+##The mean is 174277.6
+
+#Simulate the sampling distribution for ¯xprice by taking 5000 samples from the population of size 50 and computing 5000 sample means.
+sample_means50 <- rep(NA, 5000)
+
+for (i in 1:5000) {
+samp <- sample(price, 50)
+sample_means50[i] <- mean(samp)}
+
+#Plot the data, then describe the shape of this sampling distribution.
+hist(sample_means50, breaks = 25)
+##The sampling distribution appears to be symmetrical with prices averaging at approximately 180000
+
+#Calculate and report the population mean.
+mean(price)
+##The price population mean is 180796
+
+#Change your sample size from 50 to 150, then compute the sampling distribution using the same method as above, and store these means in a new vector called sample_means150.
+
+sample_means150 <- rep(NA, 5000)
+
+for (i in 1:5000) {
+samp <- sample(price, 150)  
+sample_means150[i] <- mean(samp)}
+
+hist(sample_means150, breaks = 25)
+##The distribution is similair to the sample of 50, however the center is more concentrated at 180 000.
+
+
+
+
+```
+
+
+
+
